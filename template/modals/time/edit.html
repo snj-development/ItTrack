@@ -1,0 +1,272 @@
+<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button><h4 class="modal-title"><?php _e('Edit Time Log'); ?></h4></div>
+<div class="modal-body">
+
+    <div class="row">
+
+
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="date"><?php _e('Date'); ?> *</label>
+                <div class="input-group">
+                    <input type="text" class="form-control duedate" id="date" name="date" value='<?php echo dateDisplay($log['date']); ?>'>
+                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="start"><?php _e('Start'); ?> *</label>
+                <div class="input-group bootstrap-timepicker">
+                    <input type="text" class="form-control start" id="start" name="start" required>
+                    <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="end"><?php _e('End'); ?> *</label>
+                <div class="input-group bootstrap-timepicker">
+                    <input type="text" class="form-control end" id="end" name="end" required>
+                    <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="clientid"><?php _e('Client'); ?></label>
+                <select class="form-control select2 select2-hidden-accessible" id="clientid" name="clientid" style="width: 100%;">
+                    <option value="0"><?php _e('None'); ?></option>
+                    <?php foreach ($clients as $client) { ?>
+                        <option value='<?php echo $client['id']; ?>' <?php if($log['clientid'] == $client['id']) echo "selected"; ?>><?php echo $client['name']; ?></option>
+                    <?php } ?>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="assetid"><?php _e('Asset'); ?></label>
+                <select class="form-control assetsSelect select2-hidden-accessible" id="assetid" name="assetid" style="width: 100%;">
+                    <?php if($log['assetid'] != 0) { ?>
+                        <option value="<?php echo $log['assetid']; ?>"><?php echo getSingleValue("assets","tag",$log['assetid']) ; ?> <?php echo getSingleValue("assets","name",$log['assetid']) ; ?></option>
+                    <?php } else { ?>
+                        <option value="0"><?php _e('None'); ?></option>
+                    <?php } ?>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="projectid"><?php _e('Project'); ?></label>
+                <select class="form-control projectsSelect select2-hidden-accessible" id="projectid" name="projectid" style="width: 100%;" tabindex="-1" aria-hidden="true">
+                    <?php if($log['projectid'] != 0) { ?>
+                        <option value="<?php echo $log['projectid']; ?>"><?php echo getSingleValue("projects","tag",$log['projectid']) ; ?> <?php echo getSingleValue("projects","name",$log['projectid']) ; ?></option>
+                    <?php } else { ?>
+                        <option value="0"><?php _e('None'); ?></option>
+                    <?php } ?>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="form-group">
+                <label for="issues"><?php _e('Tag Issues'); ?></label>
+                <select class="form-control issuesSelect select2-hidden-accessible" id="issues" name="issues[]" multiple style="width: 100%;" tabindex="-1" aria-hidden="true">
+                    <?php foreach($tag_issues as $tag_issue) { ?>
+                        <option value="<?php echo $tag_issue; ?>" selected="selected"><?php echo getSingleValue("issues", "name", $tag_issue); ?></option>
+                    <?php } ?>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="form-group">
+                <label for="tickets"><?php _e('Tag Tickets'); ?></label>
+                <select class="form-control ticketsSelect select2-hidden-accessible" id="tickets" name="tickets[]" multiple style="width: 100%;" tabindex="-1" aria-hidden="true">
+                    <?php foreach($tag_tickets as $tag_ticket) { ?>
+                        <option value="<?php echo $tag_ticket; ?>" selected="selected">#<?php echo getSingleValue("tickets", "ticket", $tag_ticket); ?> <?php echo getSingleValue("tickets", "subject", $tag_ticket); ?></option>
+                    <?php } ?>
+                </select>
+            </div>
+        </div>
+
+
+
+    </div>
+
+
+    <div class="form-group">
+        <label for="description" class="control-label"><?php _e('Description'); ?></label>
+        <textarea class="form-control" id="description" name="description"><?php echo $log['description']; ?></textarea>
+    </div>
+
+
+    <input type="hidden" name="staffid" value="<?php echo $liu['id']; ?>">
+    <input type="hidden" name="id" value="<?php echo $log['id']; ?>">
+
+
+    <input type="hidden" name="action" value="editTime">
+    <input type="hidden" name="route" value="<?php echo $_GET['reroute']; ?>">
+    <input type="hidden" name="routeid" value="<?php echo $_GET['routeid']; ?>">
+    <input type="hidden" name="section" value="<?php echo $_GET['section']; ?>">
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default btn-flat" data-dismiss="modal"><i class="fa fa-times"></i> <?php _e('Cancel'); ?></button>
+    <button type="submit" class="btn btn-success btn-flat"><i class="fa fa-save"></i> <?php _e('Save'); ?></button>
+</div>
+
+<script type="text/javascript">
+
+    $(".select2").select2();
+
+    $('.summernote-modal').summernote({height: 200});
+
+
+    var clientid = <?php echo $log['clientid']; ?>;
+
+
+
+    $("#clientid").on("change", function (e) {
+        clientid = $("#clientid").val();
+    });
+
+
+    	$('.assetsSelect').select2({
+    		ajax: {
+    			url: "index.php",
+    			dataType: 'json',
+    			data: function (params) {
+    			  return {
+    				q: params.term, // search term
+    				qa: 'assetsSelect',
+                    filterid: clientid
+    			  };
+    			},
+    			processResults: function (data,params) {
+    				return {
+    					results: $.map(data, function(obj) {
+    						return { id: obj.id, text: obj.text };
+    					})
+    				};
+    			},
+    			//cache: true,
+    	    },
+    	    minimumInputLength: 0,
+    		placeholder: "<?php _e('Please Select'); ?>",
+    	});
+
+        $('.projectsSelect').select2({
+            ajax: {
+                url: "index.php",
+                dataType: 'json',
+                data: function (params) {
+                  return {
+                    q: params.term, // search term
+                    qa: 'projectsSelect',
+                    filterid: clientid
+                  };
+                },
+                processResults: function (data,params) {
+                    return {
+                        results: $.map(data, function(obj) {
+                            return { id: obj.id, text: obj.text };
+                        })
+                    };
+                },
+                //cache: true,
+            },
+            minimumInputLength: 0,
+            placeholder: "<?php _e('Please Select'); ?>",
+        });
+
+        $('.issuesSelect').select2({
+            ajax: {
+                url: "index.php",
+                dataType: 'json',
+                data: function (params) {
+                  return {
+                    q: params.term, // search term
+                    qa: 'issuesSelect',
+                    filterid: clientid
+                  };
+                },
+                processResults: function (data,params) {
+                    return {
+                        results: $.map(data, function(obj) {
+                            return { id: obj.id, text: obj.text };
+                        })
+                    };
+                },
+                //cache: true,
+            },
+            minimumInputLength: 0,
+            placeholder: "<?php _e('Please Select'); ?>",
+        });
+
+        $('.ticketsSelect').select2({
+            ajax: {
+                url: "index.php",
+                dataType: 'json',
+                data: function (params) {
+                  return {
+                    q: params.term, // search term
+                    qa: 'ticketsSelect',
+                    filterid: clientid
+                  };
+                },
+                processResults: function (data,params) {
+                    return {
+                        results: $.map(data, function(obj) {
+                            return { id: obj.id, text: obj.text };
+                        })
+                    };
+                },
+                //cache: true,
+            },
+            minimumInputLength: 0,
+            placeholder: "<?php _e('Please Select'); ?>",
+        });
+
+
+
+
+
+
+        $(function() {
+            $('.duedate').datepicker({
+                format: '<?php echo jsFormat(); ?>',
+                clearBtn: 'true',
+                weekStart: '<?php echo getConfigValue("week_start"); ?>',
+                autoclose: true
+            });
+
+
+            $(".start").timepicker({
+                showSeconds: true,
+                showMeridian: false,
+                defaultTime: '<?php echo $log['start']; ?>',
+                minuteStep: 1,
+
+             });
+
+             $(".end").timepicker({
+                 showSeconds: true,
+                 showMeridian: false,
+                 defaultTime: '<?php echo $log['end']; ?>',
+                 minuteStep: 1,
+
+              });
+
+        });
+
+
+
+
+
+
+</script>

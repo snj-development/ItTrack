@@ -1,0 +1,51 @@
+<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button><h4 class="modal-title"><?php _e('Attach QR Code'); ?></h4></div>
+<div class="modal-body">
+
+
+
+    <div class="form-group">
+        <label for="asset_id"><?php _e('Asset'); ?></label>
+        <select class="form-control select2 select2-hidden-accessible" id="asset_id" name="asset_id" style="width: 100%;">
+
+            <option value="0"><?php _e('None'); ?></option>
+
+            <?php foreach($assets as $asset) { ?>
+                <option value="<?php echo $asset['id']; ?>"><?php echo $asset['tag']; ?> <?php echo $asset['name']; ?> </option>
+
+            <?php } ?>
+        </select>
+    </div>
+
+    <p>-or-</p>
+
+    <div class="form-group">
+        <label for="asset_id"><?php _e('License'); ?></label>
+        <select class="form-control select2 select2-hidden-accessible" id="license_id" name="license_id" style="width: 100%;">
+
+            <option value="0"><?php _e('None'); ?></option>
+
+            <?php foreach($licenses as $license) { ?>
+                <option value="<?php echo $license['id']; ?>"><?php echo $license['tag']; ?> <?php echo $license['name']; ?> </option>
+
+            <?php } ?>
+        </select>
+    </div>
+
+
+
+
+
+    <input type="hidden" name="id" value="<?php echo $qrcode['id']; ?>">
+    <input type="hidden" name="action" value="attachQrcode">
+    <input type="hidden" name="route" value="<?php echo $_GET['reroute']; ?>">
+    <input type="hidden" name="routeid" value="">
+    <input type="hidden" name="section" value="">
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> <?php _e('Cancel'); ?></button>
+    <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i> <?php _e('Save'); ?></button>
+</div>
+
+<script type="text/javascript">
+        $(".select2").select2();
+</script>

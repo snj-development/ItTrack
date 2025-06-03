@@ -1,0 +1,10 @@
+<?php $config = array(
+    "database_type"=>"mysql",
+    "database_name"=>"it_helpdesk",
+    "server"=>"localhost",
+    "username"=>"root",
+    "password"=>"",
+    "charset"=>"utf8",
+    "port"=>3306,
+    "encryption_key"=>"72c57e62e48fff39e1f7c12ce02d0fead0b4d6eab03d115fe9140b1c8562d8ac",
+	"encryption_iv"=>"8908bc9d6a92fadfc2e18d15649ac83039a0c1de0c0637df42f1e3c47af489a7" ); ?>

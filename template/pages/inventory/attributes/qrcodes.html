@@ -1,0 +1,121 @@
+<!-- Right side column. Contains the navbar and content of the page -->
+<aside class="right-side">
+	<!-- Content Header (Page header) -->
+	<section class="content-header">
+		<h1 class="pull-left"><?php _e('QR Codes'); ?> <small> <?php _e('Manage QR codes'); ?></small></h1>
+		<div class="pull-right"><a onClick='showM("?modal=qrcodes/generate&reroute=inventory/attributes/qrcodes");return false' data-toggle="modal" class="btn btn-primary btn-flat btn-sm"><?php _e('GENERATE'); ?></a></div>
+		<div style="clear:both"></div>
+	</section>
+	<!-- Main content -->
+	<section class="content">
+		<?php if(!empty($statusmessage)): ?>
+				<div class="row"><div class='col-md-12'><div class="alert alert-<?php print $statusmessage["type"]; ?> alert-auto" role="alert"><?php print __($statusmessage["message"]); ?></div></div></div>
+		<?php endif; ?>
+		<div class="row">
+			<div class="col-md-8">
+				<div class="box box-primary">
+					<div class="box-header"><h3 class="box-title"><?php _e('QR Codes'); ?></h3></div>
+                    <div class="box-body">
+						<div class="table-responsive">
+	                        <table id="dataTablesFull" class="table table-striped table-hover table-bordered">
+	                            <thead>
+	                                <tr>
+	                                    <th><?php _e('ID'); ?></th>
+	                                    <th><?php _e('Value'); ?></th>
+										<th><?php _e('Attached To'); ?></th>
+										<th class="text-right"></th>
+	                                </tr>
+	                            </thead>
+	                            <tbody>
+									<?php
+									foreach ($qrcodes as $qrcode) {
+										$asset = $database->get("assets", "*", ["qrvalue" => $qrcode['value']]);
+										$license = $database->get("licenses", "*", ["qrvalue" => $qrcode['value']]);
+	                                echo "<tr>";
+	                                    echo "<td>".$qrcode['id']."</td>";
+	                                    echo "<td>".$qrcode['value']."</td>";
+
+										echo "<td>";
+											if(empty($asset) && empty($license)) { ?>
+												<a href='#' onClick='showM("?modal=qrcodes/attach&reroute=inventory/attributes/qrcodes&id=<?php echo $qrcode['id']; ?>");return false'>Attach</a>
+											<?php } ?>
+
+											<?php if(!empty($asset)) { ?>
+												<a href='<?php if(in_array("manageAsset",$perms)) { ?>?route=inventory/assets/manage&id=<?php echo $asset['id']; ?><?php } else echo "#"; ?>'>
+													<span class='label' style="background-color:#FFF;color:#001F3F;border:1px solid #001F3F;"><i class='fa fa-desktop fa-fw'></i> <?php echo $asset['name']; ?> </span>
+												</a>&nbsp;
+												<a href='#' onClick='showM("?modal=qrcodes/detach&reroute=inventory/attributes/qrcodes&id=<?php echo $qrcode['id']; ?>");return false'>Detach</a>&nbsp;
+											<?php } ?>
+
+											<?php if(!empty($license)) { ?>
+												<a href='<?php if(in_array("manageAsset",$perms)) { ?>?route=inventory/licenses/manage&id=<?php echo $license['id']; ?><?php } else echo "#"; ?>'>
+													<span class='label' style="background-color:#FFF;color:#001F3F;border:1px solid #001F3F;"><i class='fa fa-certificate fa-fw'></i> <?php echo $license['name']; ?> </span>
+												</a>&nbsp;
+												<a href='#' onClick='showM("?modal=qrcodes/detach&reroute=inventory/attributes/qrcodes&id=<?php echo $qrcode['id']; ?>");return false'>Detach</a>&nbsp;
+											<?php } ?>
+
+										<?php
+										echo "</td>";
+
+										echo "<td>
+												<div class='btn-group pull-right'>
+													<a href='?route=pdf&type=qrgenerator&id=".$qrcode['id']."' target='_blank' class='btn btn-flat btn-primary btn-sm'><i class='fa fa-barcode'></i></a>
+													<a href='#' onClick='showM(\"?modal=qrcodes/edit&reroute=inventory/attributes/qrcodes&id=".$qrcode['id']."\");return false' class='btn btn-flat btn-success btn-sm'><i class='fa fa-edit'></i></a>
+													<a href='#' onClick='showM(\"?modal=qrcodes/delete&reroute=inventory/attributes/qrcodes&id=".$qrcode['id']."\");return false' class='btn btn-flat btn-danger btn-sm'><i class='fa fa-trash-o'></i></a>
+												</div>
+											  </td>";
+	                                echo "</tr>";
+									}
+									?>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-md-4">
+				<div class="box box-primary">
+					<div class="box-header"><h3 class="box-title"><?php _e('Batches'); ?></h3></div>
+					<div class="box-body">
+						<div class="table-responsive">
+							<table id="dataTablesFull" class="table table-striped table-hover table-bordered">
+								<thead>
+									<tr>
+										<th><?php _e('ID'); ?></th>
+										<th><?php _e('Date'); ?></th>
+										<th><?php _e('Count'); ?></th>
+										<th class="text-right"></th>
+									</tr>
+								</thead>
+								<tbody>
+									<?php
+									foreach ($batches as $batch) {
+
+									echo "<tr>";
+										echo "<td>".$batch['id']."</td>";
+										echo "<td>".dateDisplay($batch['date'])."</td>";
+										echo "<td>";
+											echo count(unserialize($batch['ids']));
+										echo "</td>";
+
+										echo "<td>
+												<div class='btn-group pull-right'>
+													<a href='?route=pdf&type=qrbatch-12&id=".$batch['id']."' target='_blank' class='btn btn-flat btn-primary btn-sm'><i class='fa fa-barcode'></i> 12</a>
+													<a href='?route=pdf&type=qrbatch-16&id=".$batch['id']."' target='_blank' class='btn btn-flat btn-primary btn-sm'><i class='fa fa-barcode'></i> 16</a>
+													<a href='#' onClick='showM(\"?modal=qrcodes/deleteBatch&reroute=inventory/attributes/qrcodes&id=".$batch['id']."\");return false' class='btn btn-flat btn-danger btn-sm'><i class='fa fa-trash-o'></i></a>
+												</div>
+											  </td>";
+									echo "</tr>";
+									}
+									?>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</section><!-- /.content -->
+</aside><!-- /.right-side -->

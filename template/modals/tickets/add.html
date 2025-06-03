@@ -1,0 +1,276 @@
+<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button><h4 class="modal-title"><?php _e('Add Ticket'); ?></h4></div>
+<div class="modal-body">
+
+
+
+    <div class="row">
+
+        <div class="col-md-8">
+            <div class="form-group">
+                <label for="subject"><?php _e('Subject'); ?> *</label>
+                <input type="text" class="form-control" id="subject" name="subject" value="" required>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="departmentid"><?php _e('Department'); ?></label>
+                <select class="form-control select2 select2-hidden-accessible" id="departmentid" name="departmentid" style="width: 100%;" tabindex="-1" aria-hidden="true">
+
+                    <?php foreach ($departments as $department) { ?>
+                        <option value='<?php echo $department['id']; ?>'><?php echo $department['name']; ?></option>
+                    <?php } ?>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <?php if($isAdmin) { ?>
+                <div class="form-group">
+                    <label for="clientid"><?php _e('Client'); ?></label>
+                    <select class="form-control select2 select2-hidden-accessible" id="clientid" name="clientid" style="width: 100%;" tabindex="-1" aria-hidden="true">
+                        <option value="0"><?php _e('None'); ?></option>
+                        <?php foreach ($clients as $client) { ?>
+                            <option value='<?php echo $client['id']; ?>' <?php if(isset($_GET['clientid'])) { if($_GET['clientid'] == $client['id']) echo "selected"; }  ?>><?php echo $client['name']; ?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+            <?php } ?>
+            <?php if(!$isAdmin) { ?><input type="hidden" name="clientid" value="<?php echo $liu['clientid']; ?>"><?php } ?>
+        </div>
+
+
+        <div class="col-md-6">
+            <?php if(in_array("manageTicketAssignment",$perms)) { ?>
+                <div class="form-group">
+                    <label for="adminid"><?php _e('Assign To'); ?></label>
+                    <select class="form-control select2 select2-hidden-accessible" id="adminid" name="adminid" style="width: 100%;" tabindex="-1" aria-hidden="true">
+                        <option value="0"><?php _e('Nobody'); ?></option>
+                        <?php foreach ($admins as $admin) { ?>
+                            <option value='<?php echo $admin['id']; ?>' <?php if(isset($liu['id'])) { if($liu['id'] == $admin['id']) echo "selected"; }  ?>><?php echo $admin['name']; ?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+            <?php } ?>
+            <?php if(!in_array("manageTicketAssignment",$perms)) { ?><input type="hidden" name="adminid" value="0"><?php } ?>
+
+        </div>
+    </div>
+
+    <div class="row">
+
+
+
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="assetid"><?php _e('Asset'); ?></label>
+                <select class="form-control assetsSelect select2-hidden-accessible" id="assetid" name="assetid" style="width: 100%;">
+                    <?php if(isset($_GET['assetid'])) { ?>
+                        <option value="<?php echo $_GET['assetid']; ?>"><?php echo getSingleValue("assets","tag",$_GET['assetid']) ; ?> <?php echo getSingleValue("assets","name",$_GET['assetid']) ; ?></option>
+                    <?php } else { ?>
+                        <option value="0"><?php _e('None'); ?></option>
+                    <?php } ?>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="projectid"><?php _e('Project'); ?></label>
+                <select class="form-control projectsSelect select2-hidden-accessible" id="projectid" name="projectid" style="width: 100%;" tabindex="-1" aria-hidden="true">
+                    <?php if(isset($_GET['projectid'])) { ?>
+                        <option value="<?php echo $_GET['projectid']; ?>"><?php echo getSingleValue("projects","tag",$_GET['projectid']) ; ?> <?php echo getSingleValue("projects","name",$_GET['projectid']) ; ?></option>
+                    <?php } else { ?>
+                        <option value="0"><?php _e('None'); ?></option>
+                    <?php } ?>
+                </select>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-6">
+            <?php if($isAdmin) { ?>
+                <div class="form-group">
+                    <label for="email"><?php _e('User or Email Address'); ?> * <i class="fa fa-info-circle fa-fw" data-toggle="tooltip" title="<?php _e('Select an user for this ticket or type an email address and press enter.'); ?>"></i></label>
+                    <select class="form-control usersSelectEmail select2-hidden-accessible" id="email" name="email" style="width: 100%;" tabindex="-1" aria-hidden="true" required>
+
+                    </select>
+                </div>
+            <?php } ?>
+            <?php if(!$isAdmin) { ?><input type="hidden" name="email" value="<?php echo $liu['email']; ?>"><?php } ?>
+
+        </div>
+
+        <div class="col-md-6">
+            <?php if($isAdmin) { ?>
+                <div class="form-group">
+                    <label for="ccs"><?php _e('CC Recipients'); ?> <i class="fa fa-info-circle fa-fw" data-toggle="tooltip" title="<?php _e('Select CC recipients from contacts list or type an email address and press enter.'); ?>"></i></label>
+                    <select class="form-control select2tags select2-hidden-accessible" id="ccs" name="ccs[]" style="width: 100%;" multiple>
+                        <?php foreach ($contacts as $contact) { ?>
+                            <option value='<?php echo $contact['email']; ?>'><?php echo $contact['email']; ?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+            <?php } ?>
+            <?php if(!$isAdmin) { ?><input type="hidden" name="ccs[]" value=""><?php } ?>
+        </div>
+
+    </div>
+
+    <div class="form-group">
+        <label for="message" class="control-label"><?php _e('Message'); ?></label>
+        <textarea class="form-control summernote-modal" id="message" name="message"></textarea>
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-4">
+            <?php if($isAdmin) { ?>
+                <div class="form-group"><div class="checkbox"><label><input type="checkbox" name="notification" value="true" checked="yes"> <?php _e('Send New Ticket Notification'); ?></label></div></div>
+            <?php } ?>
+            <?php if(!$isAdmin) { ?><input type="hidden" name="notification" value="false"><?php } ?>
+        </div>
+
+        <div class="col-md-4">
+            <div class="form-group">
+                <input class="fileinput" type="file" id="file" name="file[]" multiple>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="form-group">
+
+                <select class="form-control select2" id="priority" name="priority" style="width: 100%;">
+                    <option value="Low"><?php _e('Low'); ?></option>
+                    <option value="Normal" selected><?php _e('Normal'); ?></option>
+                    <option value="High"><?php _e('High'); ?></option>
+                </select>
+            </div>
+        </div>
+
+
+    </div>
+
+    <input type="hidden" name="action" value="addTicket">
+    <input type="hidden" name="route" value="<?php echo $_GET['reroute']; ?>">
+    <input type="hidden" name="routeid" value="<?php echo $_GET['routeid']; ?>">
+    <input type="hidden" name="section" value="<?php echo $_GET['section']; ?>">
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default btn-flat" data-dismiss="modal"><i class="fa fa-times"></i> <?php _e('Cancel'); ?></button>
+    <button type="submit" class="btn btn-primary btn-flat"><i class="fa fa-check"></i> <?php _e('Create'); ?></button>
+</div>
+
+<script type="text/javascript">
+
+        $(".select2").select2();
+
+        $(".select2tag").select2({
+            tags: true,
+            maximumSelectionLength: 1
+        });
+
+        $(".select2tags").select2({
+            tags: true
+        });
+
+
+
+        $('.summernote-modal').summernote({height: 200, maximumImageFileSize: 524288, dialogsInBody: true, disableDragAndDrop: true});
+
+
+        <?php if(isset($_GET['clientid'])) { ?>
+            var clientid = <?php echo $_GET['clientid']; ?>;
+        <?php } else { ?>
+            var clientid = 0;
+        <?php } ?>
+
+
+        $("#clientid").on("change", function (e) {
+            clientid = $("#clientid").val();
+        });
+
+        <?php if(!$isAdmin) { ?>
+            clientid = <?php echo $liu['clientid']; ?>;
+        <?php } ?>
+
+    	$('.assetsSelect').select2({
+    		ajax: {
+    			url: "index.php",
+    			dataType: 'json',
+    			data: function (params) {
+    			  return {
+    				q: params.term, // search term
+    				qa: 'assetsSelect',
+                    filterid: clientid
+    			  };
+    			},
+    			processResults: function (data,params) {
+    				return {
+    					results: $.map(data, function(obj) {
+    						return { id: obj.id, text: obj.text };
+    					})
+    				};
+    			},
+    			//cache: true,
+    	    },
+    	    minimumInputLength: 0,
+    		placeholder: "<?php _e('Please Select'); ?>",
+    	});
+
+        $('.projectsSelect').select2({
+            ajax: {
+                url: "index.php",
+                dataType: 'json',
+                data: function (params) {
+                  return {
+                    q: params.term, // search term
+                    qa: 'projectsSelect',
+                    filterid: clientid
+                  };
+                },
+                processResults: function (data,params) {
+                    return {
+                        results: $.map(data, function(obj) {
+                            return { id: obj.id, text: obj.text };
+                        })
+                    };
+                },
+                //cache: true,
+            },
+            minimumInputLength: 0,
+            placeholder: "<?php _e('Please Select'); ?>",
+        });
+
+
+        $('.usersSelectEmail').select2({
+            ajax: {
+                url: "index.php",
+                dataType: 'json',
+                data: function (params) {
+                  return {
+                    q: params.term, // search term
+                    qa: 'usersSelectEmail',
+                    filterid: clientid
+                  };
+                },
+                processResults: function (data,params) {
+                    return {
+                        results: $.map(data, function(obj) {
+                            return { id: obj.id, text: obj.text };
+                        })
+                    };
+                },
+                //cache: true,
+            },
+            minimumInputLength: 0,
+            placeholder: "<?php _e('Please Select'); ?>",
+            tags: true,
+            //maximumSelectionLength: 1
+        });
+
+
+</script>

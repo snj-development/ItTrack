@@ -1,0 +1,38 @@
+<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button><h4 class="modal-title"><?php _e('Release Issues'); ?></h4></div>
+<div class="modal-body">
+
+
+    <div class="form-group">
+        <label for="milestoneid"><?php _e('Milestone'); ?></label>
+        <select class="form-control select2 select2-hidden-accessible" id="milestoneid" name="milestoneid" style="width: 100%;" tabindex="-1" aria-hidden="true">
+            <?php foreach ($milestones as $milestone) { ?>
+                <option value='<?php echo $milestone['id']; ?>'><?php echo $milestone['name']; ?></option>
+            <?php } ?>
+        </select>
+    </div>
+
+
+    <div class="alert alert-info">
+        <?php _e('This action will assign all completed and unreleased issues to the selected milestone and will clear the "Done" board.'); ?>
+    </div>
+
+
+
+
+    <input type="hidden" name="projectid" value="<?php echo $_GET['routeid']; ?>">
+
+    <input type="hidden" name="action" value="releaseMilestone">
+    <input type="hidden" name="route" value="<?php echo $_GET['reroute']; ?>">
+    <input type="hidden" name="routeid" value="<?php echo $_GET['routeid']; ?>">
+    <input type="hidden" name="section" value="<?php echo $_GET['section']; ?>">
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default btn-flat" data-dismiss="modal"><i class="fa fa-times"></i> <?php _e('Cancel'); ?></button>
+    <button type="submit" class="btn btn-primary btn-flat"><i class="fa fa-check"></i> <?php _e('Release'); ?></button>
+</div>
+
+<script type="text/javascript">
+        $(".select2").select2();
+
+
+</script>

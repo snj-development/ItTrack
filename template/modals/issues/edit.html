@@ -1,0 +1,229 @@
+<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button><h4 class="modal-title"><?php _e('Edit Issue'); ?></h4></div>
+<div class="modal-body">
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="form-group">
+                <label for="name"><?php _e('Issue Name'); ?> *</label>
+                <input type="text" class="form-control" id="name" name="name" value="<?php echo $issue['name']; ?>" required>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="issuetype"><?php _e('Type'); ?></label>
+                <select class="form-control select2-icon" id="issuetype" name="issuetype" style="width: 100%;">
+                    <option value="Task" data-icon="fa-check-square fa-fw text-blue" <?php if($issue['issuetype'] == "Task") echo "selected"; ?>> <?php _e('Task'); ?></option>
+                    <option value="Maintenance" data-icon="fa-minus-square fa-fw text-yellow" <?php if($issue['issuetype'] == "Maintenance") echo "selected"; ?>> <?php _e('Maintenance'); ?></option>
+                    <option value="Bug" data-icon="fa-bug fa-fw text-red" <?php if($issue['issuetype'] == "Bug") echo "selected"; ?>> <?php _e('Bug'); ?></option>
+                    <option value="Improvement" data-icon="fa-external-link fa-fw text-teal" <?php if($issue['issuetype'] == "Improvement") echo "selected"; ?>> <?php _e('Improvement'); ?></option>
+                    <option value="New Feature" data-icon="fa-plus-square fa-fw text-green" <?php if($issue['issuetype'] == "New Feature") echo "selected"; ?>> <?php _e('New Feature'); ?></option>
+                    <option value="Story" data-icon="fa-circle fa-fw text-red" <?php if($issue['issuetype'] == "Story") echo "selected"; ?>> <?php _e('Story'); ?></option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <?php if($isAdmin) { ?>
+                <div class="form-group">
+                    <label for="clientid"><?php _e('Client'); ?></label>
+                    <select class="form-control select2 select2-hidden-accessible" id="clientid" name="clientid" style="width: 100%;" tabindex="-1" aria-hidden="true">
+                        <option value="0"><?php _e('None'); ?></option>
+                        <?php foreach ($clients as $client) { ?>
+                            <option value='<?php echo $client['id']; ?>' <?php if($issue['clientid'] == $client['id']) echo "selected"; ?>><?php echo $client['name']; ?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+            <?php } ?>
+            <?php if(!$isAdmin) { ?><input type="hidden" name="clientid" value="<?php echo $issue['clientid']; ?>"><?php } ?>
+        </div>
+        <div class="col-md-6">
+            <?php if($isAdmin) { ?>
+                <div class="form-group">
+                    <label for="adminid"><?php _e('Assigned To'); ?></label>
+                    <select class="form-control select2 select2-hidden-accessible" id="adminid" name="adminid" style="width: 100%;" tabindex="-1" aria-hidden="true">
+                        <option value="0"><?php _e('Nobody'); ?></option>
+                        <?php foreach ($admins as $admin) { ?>
+                            <option value='<?php echo $admin['id']; ?>' <?php if($issue['adminid'] == $admin['id']) echo "selected"; ?>><?php echo $admin['name']; ?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+            <?php } ?>
+            <?php if(!$isAdmin) { ?><input type="hidden" name="adminid" value="<?php echo $issue['adminid']; ?>"><?php } ?>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="assetid"><?php _e('Asset'); ?></label>
+                <select class="form-control assetsSelect select2-hidden-accessible" id="assetid" name="assetid" style="width: 100%;">
+                    <?php if($issue['assetid'] != 0) { ?>
+                        <option value="<?php echo $issue['assetid']; ?>"><?php echo getSingleValue("assets","tag",$issue['assetid']) ; ?> <?php echo getSingleValue("assets","name",$issue['assetid']) ; ?></option>
+                    <?php } else { ?>
+                        <option value="0"><?php _e('None'); ?></option>
+                    <?php } ?>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="projectid"><?php _e('Project'); ?></label>
+                <select class="form-control projectsSelect select2-hidden-accessible" id="projectid" name="projectid" style="width: 100%;" tabindex="-1" aria-hidden="true">
+                    <?php if($issue['projectid'] != 0) { ?>
+                        <option value="<?php echo $issue['projectid']; ?>"><?php echo getSingleValue("projects","tag",$issue['projectid']) ; ?> <?php echo getSingleValue("projects","name",$issue['projectid']) ; ?></option>
+                    <?php } else { ?>
+                        <option value="0"><?php _e('None'); ?></option>
+                    <?php } ?>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="status"><?php _e('Status'); ?> *</label>
+                <select class="form-control select2" id="status" name="status" style="width: 100%;">
+                    <option value="To Do" <?php if($issue['status'] == "To Do") echo "selected"; ?>><?php _e('To Do'); ?></option>
+                    <option value="In Progress" <?php if($issue['status'] == "In Progress") echo "selected"; ?>><?php _e('In Progress'); ?></option>
+                    <option value="In Review" <?php if($issue['status'] == "In Review") echo "selected"; ?>><?php _e('In Review'); ?></option>
+                    <option value="Done" <?php if($issue['status'] == "Done") echo "selected"; ?>><?php _e('Done'); ?></option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="priority"><?php _e('Priority'); ?> *</label>
+                <select class="form-control select2" id="priority" name="priority" style="width: 100%;">
+                    <option value="Low" <?php if($issue['priority'] == "Low") echo "selected"; ?>><?php _e('Low'); ?></option>
+                    <option value="Normal" <?php if($issue['priority'] == "Normal") echo "selected"; ?>><?php _e('Normal'); ?></option>
+                    <option value="High" <?php if($issue['priority'] == "High") echo "selected"; ?>><?php _e('High'); ?></option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="date"><?php _e('Start Date'); ?></label>
+                <div class="input-group">
+                    <input type="text" class="form-control startdate" id="startdate" name="startdate" value="<?php echo dateDisplay($issue['startdate']); ?>">
+                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="date"><?php _e('Due Date'); ?></label>
+                <div class="input-group">
+                    <input type="text" class="form-control duedate" id="duedate" name="duedate" value="<?php echo dateDisplay($issue['duedate']); ?>">
+                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+
+    </div>
+
+    <div class="form-group">
+        <label for="description" class="control-label"><?php _e('Description'); ?></label>
+        <textarea class="form-control summernote-modal" id="description" name="description"><?php echo $issue['description']; ?></textarea>
+    </div>
+
+    <input type="hidden" name="id" value="<?php echo $issue['id']; ?>">
+    <input type="hidden" name="action" value="editIssue">
+    <input type="hidden" name="route" value="<?php echo $_GET['reroute']; ?>">
+    <input type="hidden" name="routeid" value="<?php echo $_GET['routeid']; ?>">
+    <input type="hidden" name="section" value="<?php echo $_GET['section']; ?>">
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default btn-flat" data-dismiss="modal"><i class="fa fa-times"></i> <?php _e('Cancel'); ?></button>
+    <button type="submit" class="btn btn-success btn-flat"><i class="fa fa-save"></i> <?php _e('Save'); ?></button>
+</div>
+
+<script type="text/javascript">
+        $(".select2").select2();
+
+        function formatIcon(icon) {
+            if (!icon.id) { return icon.text; }
+            var originalOption = icon.element;
+            var $icon = $('<span></span>').append($('<i class="fa ' + $(originalOption).data('icon') + '"></i>') ).append(icon.text);
+            return $icon;
+        }
+
+        $('.select2-icon').select2({
+            templateResult: formatIcon,
+            templateSelection: formatIcon
+        });
+
+        $(function() {
+            $('#startdate,#duedate').datepicker({
+                format: '<?php echo jsFormat(); ?>',
+                clearBtn: 'true',
+                weekStart: '<?php echo getConfigValue("week_start"); ?>',
+                autoclose: true
+            });
+        });
+
+        $('.summernote-modal').summernote({height: 200, maximumImageFileSize: 524288, dialogsInBody: true, disableDragAndDrop: true});
+
+
+
+        var clientid = <?php echo $issue['clientid']; ?>;
+
+
+        $("#clientid").on("change", function (e) {
+            clientid = $("#clientid").val();
+        });
+
+    	$('.assetsSelect').select2({
+    		ajax: {
+    			url: "index.php",
+    			dataType: 'json',
+    			data: function (params) {
+    			  return {
+    				q: params.term, // search term
+    				qa: 'assetsSelect',
+                    filterid: clientid
+    			  };
+    			},
+    			processResults: function (data,params) {
+    				return {
+    					results: $.map(data, function(obj) {
+    						return { id: obj.id, text: obj.text };
+    					})
+    				};
+    			},
+    			//cache: true,
+    	    },
+    	    minimumInputLength: 0,
+    		placeholder: "<?php _e('Please Select'); ?>",
+    	});
+
+        $('.projectsSelect').select2({
+            ajax: {
+                url: "index.php",
+                dataType: 'json',
+                data: function (params) {
+                  return {
+                    q: params.term, // search term
+                    qa: 'projectsSelect',
+                    filterid: clientid
+                  };
+                },
+                processResults: function (data,params) {
+                    return {
+                        results: $.map(data, function(obj) {
+                            return { id: obj.id, text: obj.text };
+                        })
+                    };
+                },
+                //cache: true,
+            },
+            minimumInputLength: 0,
+            placeholder: "<?php _e('Please Select'); ?>",
+        });
+
+
+</script>

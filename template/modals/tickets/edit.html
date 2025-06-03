@@ -1,0 +1,274 @@
+<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button><h4 class="modal-title"><?php _e('Edit Ticket'); ?></h4></div>
+<div class="modal-body">
+
+    <div class="row">
+
+
+        <div class="col-md-8">
+            <div class="form-group">
+                <label for="subject"><?php _e('Subject'); ?> *</label>
+                <input type="text" class="form-control" id="subject" name="subject" value="<?php echo $ticket['subject']; ?>" required>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="departmentid"><?php _e('Department'); ?></label>
+                <select class="form-control select2 select2-hidden-accessible" id="departmentid" name="departmentid" style="width: 100%;" tabindex="-1" aria-hidden="true">
+        
+                    <?php foreach ($departments as $department) { ?>
+                        <option value='<?php echo $department['id']; ?>' <?php if($ticket['departmentid'] == $department['id']) echo "selected"; ?> ><?php echo $department['name']; ?></option>
+                    <?php } ?>
+                </select>
+            </div>
+        </div>
+
+
+
+        <div class="col-md-6">
+            <?php if($isAdmin) { ?>
+                <div class="form-group">
+                    <label for="clientid"><?php _e('Client'); ?></label>
+                    <select class="form-control select2 select2-hidden-accessible" id="clientid" name="clientid" style="width: 100%;" tabindex="-1" aria-hidden="true">
+                        <option value="0"><?php _e('None'); ?></option>
+                        <?php foreach ($clients as $client) { ?>
+                            <option value='<?php echo $client['id']; ?>' <?php if($ticket['clientid'] == $client['id']) echo "selected"; ?>><?php echo $client['name']; ?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+            <?php } ?>
+            <?php if(!$isAdmin) { ?><input type="hidden" name="clientid" value="<?php echo $ticket['clientid']; ?>"><?php } ?>
+
+        </div>
+        <div class="col-md-6">
+            <?php if(in_array("manageTicketAssignment",$perms)) { ?>
+                <div class="form-group">
+                    <label for="adminid"><?php _e('Assigned To'); ?></label>
+                    <select class="form-control select2 select2-hidden-accessible" id="adminid" name="adminid" style="width: 100%;" tabindex="-1" aria-hidden="true">
+                        <option value="0">Nobody</option>
+                        <?php foreach ($admins as $admin) { ?>
+                            <option value='<?php echo $admin['id']; ?>' <?php if($ticket['adminid'] == $admin['id']) echo "selected"; ?>><?php echo $admin['name']; ?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+            <?php } ?>
+            <?php if(!in_array("manageTicketAssignment",$perms)) { ?><input type="hidden" name="adminid" value="<?php echo $ticket['adminid']; ?>"><?php } ?>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <?php if($isAdmin) { ?>
+                <div class="form-group">
+                    <label for="userid"><?php _e('User'); ?></label>
+                    <select class="form-control usersSelect select2-hidden-accessible" id="userid" name="userid" style="width: 100%;" tabindex="-1" aria-hidden="true">
+                        <?php if($ticket['userid'] != 0) { ?>
+                            <option value="<?php echo $ticket['userid']; ?>"><?php echo getSingleValue("people","name",$ticket['userid']) ; ?> (<?php echo getSingleValue("people","email",$ticket['userid']) ; ?>)</option>
+                        <?php } else { ?>
+                            <option value="0"><?php _e('None'); ?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+            <?php } ?>
+            <?php if(!$isAdmin) { ?><input type="hidden" name="userid" value="<?php echo $ticket['userid']; ?>"><?php } ?>
+        </div>
+
+        <div class="col-md-6">
+            <?php if($isAdmin) { ?>
+                <div class="form-group">
+                    <label for="email"><?php _e('Email Address'); ?> *</label>
+                    <input type="email" class="form-control" id="email" name="email" value="<?php echo $ticket['email']; ?>" required>
+                </div>
+            <?php } ?>
+            <?php if(!$isAdmin) { ?><input type="hidden" name="email" value="<?php echo $ticket['email']; ?>"><?php } ?>
+        </div>
+    </div>
+
+
+    <div class="row">
+
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="assetid"><?php _e('Asset'); ?></label>
+                <select class="form-control assetsSelect select2-hidden-accessible" id="assetid" name="assetid" style="width: 100%;">
+                    <?php if($ticket['assetid'] != 0) { ?>
+                        <option value="<?php echo $ticket['assetid']; ?>"><?php echo getSingleValue("assets","tag",$ticket['assetid']) ; ?> <?php echo getSingleValue("assets","name",$ticket['assetid']) ; ?></option>
+                    <?php } else { ?>
+                        <option value="0"><?php _e('None'); ?></option>
+                    <?php } ?>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="projectid"><?php _e('Project'); ?></label>
+                <select class="form-control projectsSelect select2-hidden-accessible" id="projectid" name="projectid" style="width: 100%;" tabindex="-1" aria-hidden="true">
+                    <?php if($ticket['projectid'] != 0) { ?>
+                        <option value="<?php echo $ticket['projectid']; ?>"><?php echo getSingleValue("projects","tag",$ticket['projectid']) ; ?> <?php echo getSingleValue("projects","name",$ticket['projectid']) ; ?></option>
+                    <?php } else { ?>
+                        <option value="0"><?php _e('None'); ?></option>
+                    <?php } ?>
+                </select>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="priority">Priority *</label>
+                <select class="form-control select2" id="priority" name="priority" style="width: 100%;">
+                    <option value="Low" <?php if($ticket['priority'] == "Low") echo "selected"; ?>><?php _e('Low'); ?></option>
+                    <option value="Normal" <?php if($ticket['priority'] == "Normal") echo "selected"; ?>><?php _e('Normal'); ?></option>
+                    <option value="High" <?php if($ticket['priority'] == "High") echo "selected"; ?>><?php _e('High'); ?></option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="status">Status *</label>
+                <select class="form-control select2" id="status" name="status" style="width: 100%;">
+                    <option value="Open" <?php if($ticket['status'] == "Open") echo "selected"; ?>><?php _e('Open'); ?></option>
+                    <option value="In Progress" <?php if($ticket['status'] == "In Progress") echo "selected"; ?>><?php _e('In Progress'); ?></option>
+                    <option value="Answered" <?php if($ticket['status'] == "Answered") echo "selected"; ?>><?php _e('Answered'); ?></option>
+                    <option value="Reopened" <?php if($ticket['status'] == "Reopened") echo "selected"; ?>><?php _e('Reopened'); ?></option>
+                    <option value="Closed" <?php if($ticket['status'] == "Closed") echo "selected"; ?>><?php _e('Closed'); ?></option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12" <?php if(!$isAdmin) { ?>style="display:none"<?php } ?>>
+            <div class="form-group">
+                <label for="ccs"><?php _e('CC Recipients'); ?></label>
+                <select class="form-control select2tags select2-hidden-accessible" id="ccs" name="ccs[]" style="width: 100%;" multiple>
+                    <?php foreach ($ccs as $cc) { ?>
+                        <option value='<?php echo $cc; ?>' selected><?php echo $cc; ?></option>
+                    <?php } ?>
+
+                    <?php foreach ($contacts as $contact) { ?>
+                        <option value='<?php echo $contact['email']; ?>' ><?php echo $contact['email']; ?></option>
+                    <?php } ?>
+                </select>
+            </div>
+        </div>
+
+
+
+    </div>
+
+    <input type="hidden" name="id" value="<?php echo $ticket['id']; ?>">
+    <input type="hidden" name="action" value="editTicket">
+    <input type="hidden" name="route" value="<?php echo $_GET['reroute']; ?>">
+    <input type="hidden" name="routeid" value="<?php echo $_GET['routeid']; ?>">
+    <input type="hidden" name="section" value="<?php echo $_GET['section']; ?>">
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default btn-flat" data-dismiss="modal"><i class="fa fa-times"></i> <?php _e('Cancel'); ?></button>
+    <button type="submit" class="btn btn-success btn-flat"><i class="fa fa-save"></i> <?php _e('Save'); ?></button>
+</div>
+
+<script type="text/javascript">
+    $(function() { $(".select2").select2(); });
+
+    $(function() { $(".select2tag").select2({
+        tags: true,
+        maximumSelectionLength: 1
+    }); });
+
+    $(function() { $(".select2tags").select2({
+        tags: true
+    }); });
+
+
+
+
+
+    var clientid = <?php echo $ticket['clientid']; ?>;
+
+
+    $("#clientid").on("change", function (e) {
+        clientid = $("#clientid").val();
+    });
+
+	$('.assetsSelect').select2({
+		ajax: {
+			url: "index.php",
+			dataType: 'json',
+			data: function (params) {
+			  return {
+				q: params.term, // search term
+				qa: 'assetsSelect',
+                filterid: clientid
+			  };
+			},
+			processResults: function (data,params) {
+				return {
+					results: $.map(data, function(obj) {
+						return { id: obj.id, text: obj.text };
+					})
+				};
+			},
+			//cache: true,
+	    },
+	    minimumInputLength: 0,
+		placeholder: "<?php _e('Please Select'); ?>",
+	});
+
+    $('.projectsSelect').select2({
+        ajax: {
+            url: "index.php",
+            dataType: 'json',
+            data: function (params) {
+              return {
+                q: params.term, // search term
+                qa: 'projectsSelect',
+                filterid: clientid
+              };
+            },
+            processResults: function (data,params) {
+                return {
+                    results: $.map(data, function(obj) {
+                        return { id: obj.id, text: obj.text };
+                    })
+                };
+            },
+            //cache: true,
+        },
+        minimumInputLength: 0,
+        placeholder: "<?php _e('Please Select'); ?>",
+    });
+
+
+    $('.usersSelect').select2({
+        ajax: {
+            url: "index.php",
+            dataType: 'json',
+            data: function (params) {
+              return {
+                q: params.term, // search term
+                qa: 'usersSelect',
+                filterid: clientid
+              };
+            },
+            processResults: function (data,params) {
+                return {
+                    results: $.map(data, function(obj) {
+                        return { id: obj.id, text: obj.text };
+                    })
+                };
+            },
+            //cache: true,
+        },
+        minimumInputLength: 0,
+        placeholder: "<?php _e('Please Select'); ?>",
+        //tags: true,
+        //maximumSelectionLength: 1
+    });
+
+
+</script>

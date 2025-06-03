@@ -1,0 +1,118 @@
+<!-- Right side column. Contains the navbar and content of the page -->
+<aside class="right-side">
+	<!-- Content Header (Page header) -->
+	<section class="content-header">
+			<h1 class="pull-left"><?php _e('Custom Fields'); ?><small> <?php _e('Manage custom fields'); ?></small></h1>
+			<div class="pull-right">
+				<?php if(in_array("addCustomField",$perms)) { ?>
+					<a onClick='showM("?modal=assetscf/add&reroute=system/customfields&section=");return false' data-toggle="modal" class="btn btn-primary btn-sm btn-flat"><?php _e('NEW CUSTOM ASSET FIELD'); ?></a>
+					<a onClick='showM("?modal=licensescf/add&reroute=system/customfields&section=licenses");return false' data-toggle="modal" class="btn btn-primary btn-sm btn-flat"><?php _e('NEW CUSTOM LICENSE FIELD'); ?></a>
+				<?php } ?>
+			</div>
+			<div style="clear:both"></div>
+	</section>
+
+	<!-- Main content -->
+	<section class="content">
+		<?php if(!empty($statusmessage)): ?>
+				<div class="row"><div class='col-md-12'><div class="alert alert-<?php print $statusmessage["type"]; ?> alert-auto" role="alert"><?php print __($statusmessage["message"]); ?></div></div></div>
+		<?php endif; ?>
+	    <div class='row'>
+            <div class='col-md-12'>
+                <!-- Custom Tabs -->
+                <div class="nav-tabs-custom">
+                    <ul class="nav nav-tabs">
+                        <li <?php if ($section == "") echo 'class="active"'; ?> ><a href="#assets" data-toggle="tab"><?php _e('Custom Asset Fields'); ?></a></li>
+						<li <?php if ($section == "licenses") echo 'class="active"'; ?> ><a href="#licenses" data-toggle="tab"><?php _e('Custom License Fields'); ?></a></li>
+                    </ul>
+
+
+                    <div class="tab-content">
+
+
+                        <div class="tab-pane <?php if ($section == "") echo 'active'; ?>" id="assets">
+
+							<div class="table-responsive">
+								<table id="dataTablesFull" class="table table-striped table-hover table-bordered">
+									<thead>
+										<tr>
+											<th><?php _e('ID'); ?></th>
+											<th><?php _e('Name'); ?></th>
+											<th><?php _e('Type'); ?></th>
+											<th><?php _e('Description'); ?></th>
+											<th><?php _e('Options'); ?></th>
+											<th class="text-right"></th>
+										</tr>
+									</thead>
+									<tbody>
+										<?php foreach ($assets_customfields as $assets_customfield) { ?>
+											<tr>
+												<td><?php echo $assets_customfield['id']; ?></td>
+												<td><?php echo $assets_customfield['name']; ?></td>
+												<td><?php echo $assets_customfield['type']; ?></td>
+												<td><?php echo $assets_customfield['description']; ?></td>
+												<td><?php echo $assets_customfield['options']; ?></td>
+												<td>
+													<div class='pull-right btn-group'>
+														<?php if(in_array("editCustomField",$perms)) { ?><a href='#' onClick='showM("?modal=assetscf/edit&reroute=system/customfields&section=&id=<?php echo $assets_customfield['id']; ?>");return false' class='btn btn-flat btn-success btn-sm'><i class='fa fa-edit'></i></a><?php } ?>
+														<?php if(in_array("deleteCustomField",$perms)) { ?><a href='#' onClick='showM("?modal=assetscf/delete&reroute=system/customfields&section=&id=<?php echo $assets_customfield['id']; ?>");return false' class='btn btn-flat btn-danger btn-sm'><i class='fa fa-trash-o'></i></a><?php } ?>
+													</div>
+												</td>
+											</tr>
+										<?php } ?>
+									</tbody>
+
+
+								</table>
+							</div>
+
+						</div><!-- /.tab-pane -->
+
+
+						<div class="tab-pane <?php if ($section == "licenses") echo 'active'; ?>" id="licenses">
+
+							<div class="table-responsive">
+								<table id="dataTablesFull" class="table table-striped table-hover table-bordered">
+									<thead>
+										<tr>
+											<th><?php _e('ID'); ?></th>
+											<th><?php _e('Name'); ?></th>
+											<th><?php _e('Type'); ?></th>
+											<th><?php _e('Description'); ?></th>
+											<th><?php _e('Options'); ?></th>
+											<th class="text-right"></th>
+										</tr>
+									</thead>
+									<tbody>
+										<?php foreach ($licenses_customfields as $licenses_customfield) { ?>
+											<tr>
+												<td><?php echo $licenses_customfield['id']; ?></td>
+												<td><?php echo $licenses_customfield['name']; ?></td>
+												<td><?php echo $licenses_customfield['type']; ?></td>
+												<td><?php echo $licenses_customfield['description']; ?></td>
+												<td><?php echo $licenses_customfield['options']; ?></td>
+												<td>
+													<div class='pull-right btn-group'>
+														<?php if(in_array("editCustomField",$perms)) { ?><a href='#' onClick='showM("?modal=licensescf/edit&reroute=system/customfields&section=licenses&id=<?php echo $licenses_customfield['id']; ?>");return false' class='btn btn-flat btn-success btn-sm'><i class='fa fa-edit'></i></a><?php } ?>
+														<?php if(in_array("deleteCustomField",$perms)) { ?><a href='#' onClick='showM("?modal=licensescf/delete&reroute=system/customfields&section=licenses&id=<?php echo $licenses_customfield['id']; ?>");return false' class='btn btn-flat btn-danger btn-sm'><i class='fa fa-trash-o'></i></a><?php } ?>
+													</div>
+												</td>
+											</tr>
+										<?php } ?>
+									</tbody>
+
+
+								</table>
+							</div>
+
+						</div><!-- /.tab-pane -->
+
+
+                    </div><!-- /.tab-content -->
+                </div><!-- nav-tabs-custom -->
+            </div><!-- /.col-->
+        </div><!-- ./row -->
+
+
+	</section><!-- /.content -->
+</aside><!-- /.right-side -->

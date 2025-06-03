@@ -1,0 +1,30 @@
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title"><?php echo $file['name']; ?> <small><?php echo $file['file']; ?></small></h4>
+</div>
+<div class="modal-body">
+
+    <div class="row">
+        <div class="col-md-12">
+            <?php if (strpos($mimetype, 'image/') !== false) { ?>
+                <img class="img-responsive" src="?qa=download&id=<?php echo $file['id']; ?>">
+            <?php } else { ?>
+                <p class="alert alert-warning alert-dismissible"><?php _e('This file cannot be viewed in a web browser. Please download on your PC to open.'); ?></p>
+            <?php } ?>
+        </div>
+
+    </div>
+
+
+
+    <input type="hidden" name="id" value="<?php echo $_GET['id']; ?>">
+
+    <input type="hidden" name="route" value="<?php echo $_GET['reroute']; ?>">
+    <input type="hidden" name="routeid" value="<?php echo $_GET['routeid']; ?>">
+    <input type="hidden" name="section" value="<?php if(isset($_GET['section'])) echo $_GET['section']; else echo ""; ?>">
+</div>
+<div class="modal-footer">
+    <?php if(in_array("downloadFile",$perms)) { ?><a href="<?php echo "?qa=download&id=" . $file['id']; ?>" class='btn btn-primary'><i class='fa fa-download'></i> <?php _e('Download'); ?></a><?php } ?>
+    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> <?php _e('Close'); ?></button>
+
+</div>
